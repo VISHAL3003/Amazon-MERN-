@@ -4,7 +4,6 @@ import "./footer.css";
 const Footer = () => {
     
     const year = new Date().getFullYear();
-    console.log(year);
   return (
     <footer>
         <div className="footer_container">
