@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import "./signup.css"
 import { NavLink } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignUp = () => {
 
@@ -25,6 +27,37 @@ const SignUp = () => {
         })
     }
 
+    const senddata = async(e)=>{
+        e.preventDefault();
+        const {fname,email,mobile,password,cpassword} = udata;
+
+        const res = await fetch("register",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({
+                fname,email,mobile,password,cpassword
+            })
+        });
+
+        const data = await res.json();
+        //console.log(data);
+
+        if(res.status === 422 || !data){
+            //alert("No data");
+            toast.warning("Enter the missing details",{
+                position: "top-center",
+            })
+        } else{
+            //alert("Data succesfully added.");
+            toast.success("data succesfully added",{
+                position: "top-center",
+            })
+            setUdata({...udata,fname:"",email:"",mobile:"",password:"",cpassword:""});
+        }
+    }
+
   return (
     <section>
         <div className="sign_container">
@@ -32,7 +65,7 @@ const SignUp = () => {
                 <img src="./blacklogoamazon.png" alt="amazonlogo" />
             </div>
             <div className="sign_form">
-                <form>
+                <form method='POST'>
                     <h1>Create account</h1>
                     <div className="form_data">
                         <label htmlFor="fname">Your name</label>
@@ -69,13 +102,14 @@ const SignUp = () => {
                             value={udata.cpassword}
                         name='cpassword' id='cpassword'/>
                     </div>
-                    <button className='signin_btn'>Continue</button>
+                    <button className='signin_btn' onClick={senddata}>Continue</button>
                     <div className="signin_info">
                         <p>Already have an account?</p>
                         <NavLink to="/login">Signin</NavLink>
                     </div>
                 </form>
             </div>
+            <ToastContainer />
         </div>
     </section>
   )
